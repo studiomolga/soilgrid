@@ -13,3 +13,13 @@ void draw() {
   background(255);
   grid.draw();
 }
+
+void mousePressed(){
+  int randCellIndex = int(random(grid.getNumCells()));
+  
+  if(grid.getCellColor(randCellIndex) == color(255)) {
+    grid.setCellColor(randCellIndex, color(0));
+  } else {
+    grid.setCellColor(randCellIndex, color(255));
+  }
+}

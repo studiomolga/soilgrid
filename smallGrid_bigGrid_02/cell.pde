@@ -8,16 +8,15 @@ class Coordinate {
 }
 
 class Cell {
-  //a class that represents a single class
+  //a class that represents a single cell
   Coordinate coord;
   int index;
-  //float w,h;   // width and height
-  //float angle; // angle for oscillating brightness
+  color clr;
 
-  // Cell Constructor
-  Cell(int x, int y, int index) {
+  Cell(int x, int y, int index, color clr) {
     coord = new Coordinate(x, y);
     this.index = index;
+    this.clr = clr;
   } 
   
   Coordinate getCoordinate(){
@@ -26,5 +25,13 @@ class Cell {
   
   int getIndex(){
     return index;
+  }
+  
+  color getColor(){
+    return clr;
+  }
+  
+  void setColor(color clr){
+    this.clr = clr;
   }
 }
