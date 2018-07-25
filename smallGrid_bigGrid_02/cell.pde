@@ -1,4 +1,5 @@
 class Coordinate {
+  //a little helper class for containing a coordinate
   int x, y;
   Coordinate(int x, int y){
     this.x = x;
@@ -6,8 +7,8 @@ class Coordinate {
   }
 }
 
-
 class Cell {
+  //a class that represents a single class
   Coordinate coord;
   int index;
   //float w,h;   // width and height
