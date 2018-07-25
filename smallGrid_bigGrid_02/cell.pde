@@ -10,14 +10,14 @@ class Coordinate {
 class Cell {
   //a class that represents a single cell
   Coordinate coord;
-  int index;
+  int index, w, h;
   color clr;
 
   Cell(int x, int y, int index, color clr) {
     coord = new Coordinate(x, y);
     this.index = index;
     this.clr = clr;
-  } 
+  }
   
   Coordinate getCoordinate(){
     return coord;

@@ -15,6 +15,7 @@ void draw() {
 }
 
 void mousePressed(){
+  //press the mouse to change colors on random cells
   int randCellIndex = int(random(grid.getNumCells()));
   
   if(grid.getCellColor(randCellIndex) == color(255)) {

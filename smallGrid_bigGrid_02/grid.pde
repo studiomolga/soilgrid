@@ -1,4 +1,5 @@
 class Grid{
+  //class that represents a grid
   int cols, rows;
   Cell[] cells;
   
@@ -32,8 +33,6 @@ class Grid{
       Cell cell = cells[i];
       Coordinate coord = cell.getCoordinate();
       
-      //maybe find a way to include the width and height in to the Cell class
-      //but in a way that it could automatically adjust to window size changes
       int cellWidth = width / cols;
       int cellHeight = height / rows;
       
