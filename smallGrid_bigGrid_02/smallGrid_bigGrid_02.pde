@@ -15,8 +15,8 @@ void setup() {
   gridHeight = height;
   grids = new Grid[numGrids];
   for(int i = 0; i < grids.length; i++){
-    int x = i % numGrids;
-    int y = i / numGrids;
+    int x = (i % cols) * gridWidth;
+    int y = (i / rows) * gridHeight;
     Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
     grids[i] = grid;
   }
@@ -30,17 +30,19 @@ void draw() {
 }
 
 void addGrids(int amount){
-  for(int i = grids.length; i < amount; i++){
-    int x = (i % numGrids) * gridWidth;
-    int y = (i / numGrids) * gridHeight;
-    println(x);
-    println(y);
-    println("-------");
-    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
+  for(int i = 0; i < grids.length; i++){
+      int x = (i % cols) * gridWidth;
+      int y = (i / rows) * gridHeight;
+      grids[i].setGridSize(gridWidth, gridHeight);
+      grids[i].setGridPos(x, y);
+  }
     
+  for(int i = grids.length; i < amount; i++){
+    int x = (i % cols) * gridWidth;
+    int y = (i / rows) * gridHeight;
+    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
     grids = (Grid[]) append(grids, grid);
   }
-  println("++++++++++++++++++++++++");
 }
 
 void mousePressed(){
@@ -65,13 +67,6 @@ void keyPressed(){
     numGrids *= 4;
     cols *= 2;
     rows *= 2;
-    for(int i = 0; i < grids.length; i++){
-      grids[i].setGridSize(gridWidth, gridHeight);
-      
-      int x = (i % numGrids) * gridWidth;
-      int y = (i / numGrids) * gridHeight;
-      grids[i].setGridPos(x, y);
-    }
     addGrids(numGrids);
   }
 }
