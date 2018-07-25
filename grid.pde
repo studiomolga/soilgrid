@@ -13,15 +13,17 @@ class Cell {
   } 
 
 
-  void display(float posx, float posy, float d) {
+  void display(float posx, float posy, float d, int colors) {
+    strokeWeight(0.1);
     stroke(120);
-    fill(255);
+    fill(colors);
     rect(posx,posy,d,d); 
   }
   
-    void displayek(float posx, float posy, float d) {
-    stroke(255);
+    void displayek() {
+    strokeWeight(0.1);
+    stroke(120);
     fill(0);
-    rect(posx,posy,d,d); 
+    rect(x,y,w,h); 
   }
 }
