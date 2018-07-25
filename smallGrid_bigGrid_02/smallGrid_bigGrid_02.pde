@@ -31,10 +31,10 @@ void draw() {
 
 void addGrids(int amount){
   for(int i = 0; i < grids.length; i++){
-      int x = (i % cols) * gridWidth;
-      int y = (i / rows) * gridHeight;
-      grids[i].setGridSize(gridWidth, gridHeight);
-      grids[i].setGridPos(x, y);
+    int x = (i % cols) * gridWidth;
+    int y = (i / rows) * gridHeight;
+    grids[i].setGridSize(gridWidth, gridHeight);
+    grids[i].setGridPos(x, y);
   }
     
   for(int i = grids.length; i < amount; i++){
