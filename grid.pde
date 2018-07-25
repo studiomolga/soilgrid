@@ -1,64 +1,27 @@
-float sizeCell;
-Cell[][] grid;
+
+class Cell {
+  float x,y;   // x,y location
+  float w,h;   // width and height
+  float angle; // angle for oscillating brightness
+
+  // Cell Constructor
+  Cell(float tempX, float tempY, float tempW, float tempH) {
+    x = tempX;
+    y = tempY;
+    w = tempW;
+    h = tempH;
+  } 
 
 
-int cols = 3;
-int rows = 3;
-
-void setup() {
-  size(150, 150);
-
-  grid = new Cell[cols][rows];
-  // size = width/8;
-  sizeCell = (width-1)/3.0;
-  for (int i = 0; i < cols; i++) {
-    for (int j = 0; j < rows; j++) {
-      // Initialize each object
-      grid[i][j] = new Cell(i*sizeCell, j*sizeCell, sizeCell, sizeCell);
-    }
+  void display(float posx, float posy, float d) {
+    stroke(120);
+    fill(255);
+    rect(posx,posy,d,d); 
   }
-
-  noStroke();
-  drawGrid();
-}
-
-void draw() {
-  //  for (int i = 0; i < cols; i++) {
-  //  for (int j = 0; j < rows; j++) {
-  //    grid[i][j].display(i*sizeCell, j*sizeCell, sizeCell);
-  //    //grid[1][0].displayek();
-  //  }
-  //}
-}
-
-
-
-void mousePressed() {
-  if (mouseButton == LEFT) {
-    if (sizeCell < (width-1)/3.0) 
-      sizeCell *= 2.0;
-  } else if (mouseButton == RIGHT) {
-    if (sizeCell > 2) 
-      sizeCell *= 0.5;
+  
+    void displayek(float posx, float posy, float d) {
+    stroke(255);
+    fill(0);
+    rect(posx,posy,d,d); 
   }
-  drawGrid();
-}
-
-
-void drawGrid() {
-
- for (int n = 0; n < cols; n++) {
-    for (int m = 0; m < rows; m++) {
-
-  for (int i = 0; i < width; i += sizeCell) {
-    for (int j = 0; j < height; j += sizeCell) {
-
-      grid[n][m].display(i, j, sizeCell); // HERE MUST BE A GRID
-
-      grid[1][0].displayek(1, 0, sizeCell);
-    }
-  }
-    }
- }
-
 }
