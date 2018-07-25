@@ -47,18 +47,17 @@ void mousePressed() {
 
 void drawGrid() {
 
- for (int n = 0; n < cols; n++) {
+  for (int n = 0; n < cols; n++) {
     for (int m = 0; m < rows; m++) {
 
-  for (int i = 0; i < width; i += sizeCell) {
-    for (int j = 0; j < height; j += sizeCell) {
+      for (int i = 0; i < width; i += sizeCell) {
+        for (int j = 0; j < height; j += sizeCell) {
 
-      grid[n][m].display(i, j, sizeCell); // HERE MUST BE A GRID
-
-      grid[1][0].displayek(1, 0, sizeCell);
+          grid[n][m].display(i, j, sizeCell, 255); // HERE MUST BE A GRID
+          grid[n][m].display(sizeCell*2, sizeCell, sizeCell, 0);
+          grid[n][m].display(sizeCell*0, sizeCell*2, sizeCell, 0);
+        }
+      }
     }
   }
-    }
- }
-
 }
