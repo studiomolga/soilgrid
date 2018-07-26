@@ -7,10 +7,12 @@ int gridHeight;
 int cols = 1;
 int rows = 1;
 
+GridStates states;
 Grid[] grids;
 
 void setup() {
-  size(1024, 1024);
+  size(256, 256);
+  states = new GridStates();
   gridWidth = width;
   gridHeight = height;
   grids = new Grid[numGrids];
