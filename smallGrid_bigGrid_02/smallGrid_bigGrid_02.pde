@@ -7,12 +7,11 @@ int gridHeight;
 int cols = 1;
 int rows = 1;
 
-GridStates states;
 Grid[] grids;
+int gridState = 0;
 
 void setup() {
   size(256, 256);
-  states = new GridStates();
   gridWidth = width;
   gridHeight = height;
   grids = new Grid[numGrids];
@@ -70,5 +69,11 @@ void keyPressed(){
     cols *= 2;
     rows *= 2;
     addGrids(numGrids);
+  } else if (key == 'q'){
+    gridState += 1;
+    gridState %= 512;
+    for(int i = 0; i < grids.length; i++){
+      grids[i].setGridState(gridState);
+    }
   }
 }
