@@ -18,6 +18,8 @@ class Grid{
       Cell cell = new Cell(xCell, yCell, i, color(255));
       cells[i] = cell;
     }
+    
+    setGridState(0);
   }
   
   void setCellColor(int cellIndex, color clr){
@@ -42,6 +44,18 @@ class Grid{
     return cells.length;
   }
   
+  void setGridState(int state){
+    String binaryString = binary(state, cells.length);
+    char[] binaryChars = binaryString.toCharArray();
+    for(int i = 0; i < binaryChars.length; i++){
+      if(binaryChars[i] == '0'){
+        cells[abs(binaryChars.length - i) - 1].setColor(color(255));
+      } else {
+        cells[abs(binaryChars.length - i) - 1].setColor(color(0));
+      }
+    }
+  }
+  
   void draw(){
     for(int i = 0; i < cells.length; i++){
       Cell cell = cells[i];
@@ -50,7 +64,7 @@ class Grid{
       int cellWidth = w / cols;
       int cellHeight = h / rows;
       
-      stroke(127);
+      stroke(200);
       fill(cell.getColor());
       rect((coord.x * cellWidth) + x, (coord.y * cellHeight) + y, cellWidth, cellHeight);
     }
