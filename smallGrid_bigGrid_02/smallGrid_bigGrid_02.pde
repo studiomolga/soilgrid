@@ -1,79 +1,84 @@
-float sizeCell;
-int gridCols = 3;
-int gridRows = 3;
-int numGrids = 1;
-int gridWidth;
-int gridHeight;
-int cols = 1;
+int GRID_COLS = 3;
+int GRID_ROWS = 3;
+int cols = 4;
 int rows = 1;
+int CLUSTER_HEIGHT = 256;
+int NUM_CLUSTERS = cols * rows;
 
-Grid[] grids;
 int gridState = 0;
+Cluster[] clusters;
+
+void settings(){
+  size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
+}
 
 void setup() {
-  size(256, 256);
-  gridWidth = width;
-  gridHeight = height;
-  grids = new Grid[numGrids];
-  for(int i = 0; i < grids.length; i++){
-    int x = (i % cols) * gridWidth;
-    int y = (i / rows) * gridHeight;
-    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
-    grids[i] = grid;
+  clusters = new Cluster[NUM_CLUSTERS];
+  int y = 0;
+  for(int i = 0; i < clusters.length; i++){
+    int xCluster = (i % cols) * CLUSTER_HEIGHT;
+    int yCluster = y * CLUSTER_HEIGHT;
+    Cluster cluster = new Cluster(xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
+    clusters[i] = cluster;
+    if(i % cols == cols - 1) y += 1;
   }
 }
 
 void draw() {
   background(255);
-  for(int i = 0; i < grids.length; i++){
-    grids[i].draw();
+  for(int i = 0; i < clusters.length; i++){
+    clusters[i].draw();
   }
 }
 
-void addGrids(int amount){
-  for(int i = 0; i < grids.length; i++){
-    int x = (i % cols) * gridWidth;
-    int y = (i / rows) * gridHeight;
-    grids[i].setGridSize(gridWidth, gridHeight);
-    grids[i].setGridPos(x, y);
-  }
+//void addGrids(int amount){
+//  for(int i = 0; i < grids.length; i++){
+//    int x = (i % cols) * gridWidth;
+//    int y = (i / rows) * gridHeight;
+//    grids[i].setGridSize(gridWidth, gridHeight);
+//    grids[i].setGridPos(x, y);
+//  }
     
-  for(int i = grids.length; i < amount; i++){
-    int x = (i % cols) * gridWidth;
-    int y = (i / rows) * gridHeight;
-    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
-    grids = (Grid[]) append(grids, grid);
-  }
-}
+//  for(int i = grids.length; i < amount; i++){
+//    int x = (i % cols) * gridWidth;
+//    int y = (i / rows) * gridHeight;
+//    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
+//    grid.setGridState(gridState);
+//    grids = (Grid[]) append(grids, grid);
+    
+//  }
+//}
 
 void mousePressed(){
-  //press the mouse to change colors on random cells
-  for(int i = 0; i < grids.length; i++){
-    Grid grid = grids[i];
-    int randCellIndex = int(random(grid.getNumCells()));
-    
-    if(grid.getCellColor(randCellIndex) == color(255)) {
-      grid.setCellColor(randCellIndex, color(0));
-    } else {
-      grid.setCellColor(randCellIndex, color(255));
-    }
-  }
-  
+  ////press the mouse to change colors on random cells
+  for(int i = 0; i < clusters.length; i++){
+    clusters[i].randomize();
+  }  
 }
 
 void keyPressed(){
-  if(key == 'a'){
-    gridWidth /= 2;
-    gridHeight /= 2;
-    numGrids *= 4;
-    cols *= 2;
-    rows *= 2;
-    addGrids(numGrids);
-  } else if (key == 'q'){
+  if(key == 'q'){
     gridState += 1;
     gridState %= 512;
-    for(int i = 0; i < grids.length; i++){
-      grids[i].setGridState(gridState);
+    for(int i = 0; i < clusters.length; i++){
+      for(int j = 0; j < clusters[i].getNumGrids(); j++){
+        clusters[i].setGridState(j, gridState);
+      }
     }
   }
+  
+  //if(key == 'a'){
+  //  gridWidth /= 2;
+  //  gridHeight /= 2;
+  //  numGrids *= 4;
+  //  cols *= 2;
+  //  rows *= 2;
+  //  addGrids(numGrids);
+  //} else if (key == 'q'){
+  //  gridState += 1;
+  //  gridState %= 512;
+  //  for(int i = 0; i < grids.length; i++){
+  //    grids[i].setGridState(gridState);
+  //  }
+  //}
 }

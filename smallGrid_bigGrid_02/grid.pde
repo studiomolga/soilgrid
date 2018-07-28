@@ -64,7 +64,8 @@ class Grid{
       int cellWidth = w / cols;
       int cellHeight = h / rows;
       
-      stroke(200);
+      //stroke(200);
+      noStroke();
       fill(cell.getColor());
       rect((coord.x * cellWidth) + x, (coord.y * cellHeight) + y, cellWidth, cellHeight);
     }
