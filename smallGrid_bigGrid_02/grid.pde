@@ -44,6 +44,16 @@ class Grid{
     return cells.length;
   }
   
+  void randomize(){
+    int randCellIndex = int(random(getNumCells()));
+      
+      if(getCellColor(randCellIndex) == color(255)) {
+        setCellColor(randCellIndex, color(0));
+      } else {
+        setCellColor(randCellIndex, color(255));
+      }
+  }
+  
   void setGridState(int state){
     String binaryString = binary(state, cells.length);
     char[] binaryChars = binaryString.toCharArray();

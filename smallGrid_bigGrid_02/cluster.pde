@@ -36,14 +36,7 @@ class Cluster{
   
   void randomize(){
     for(int i = 0; i < grids.length; i++){
-      Grid grid = grids[i];
-      int randCellIndex = int(random(grid.getNumCells()));
-      
-      if(grid.getCellColor(randCellIndex) == color(255)) {
-        grid.setCellColor(randCellIndex, color(0));
-      } else {
-        grid.setCellColor(randCellIndex, color(255));
-      }
+      grids[i].randomize();
     }
   }
   

@@ -1,4 +1,4 @@
-int cols = 4;
+int cols = 2;
 int rows = 1;
 
 static final int GRID_COLS = 3;
