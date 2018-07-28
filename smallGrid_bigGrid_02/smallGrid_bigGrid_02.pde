@@ -1,12 +1,14 @@
-int GRID_COLS = 3;
-int GRID_ROWS = 3;
 int cols = 4;
 int rows = 1;
-int CLUSTER_HEIGHT = 256;
-int NUM_CLUSTERS = cols * rows;
+
+static final int GRID_COLS = 3;
+static final int GRID_ROWS = 3;
+static final int CLUSTER_HEIGHT = 256;
+final int NUM_CLUSTERS = cols * rows;
+
+Cluster[] clusters;
 
 int gridState = 0;
-Cluster[] clusters;
 
 void settings(){
   size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
@@ -31,33 +33,20 @@ void draw() {
   }
 }
 
-//void addGrids(int amount){
-//  for(int i = 0; i < grids.length; i++){
-//    int x = (i % cols) * gridWidth;
-//    int y = (i / rows) * gridHeight;
-//    grids[i].setGridSize(gridWidth, gridHeight);
-//    grids[i].setGridPos(x, y);
-//  }
-    
-//  for(int i = grids.length; i < amount; i++){
-//    int x = (i % cols) * gridWidth;
-//    int y = (i / rows) * gridHeight;
-//    Grid grid = new Grid(gridCols, gridRows, x, y, gridWidth, gridHeight);
-//    grid.setGridState(gridState);
-//    grids = (Grid[]) append(grids, grid);
-    
-//  }
-//}
-
 void mousePressed(){
-  ////press the mouse to change colors on random cells
+  //press the mouse to change colors on random cells
   for(int i = 0; i < clusters.length; i++){
     clusters[i].randomize();
   }  
 }
 
 void keyPressed(){
-  if(key == 'q'){
+  if(key == 'a'){
+    for(int i = 0; i < clusters.length; i++){
+      clusters[i].expandGrid();
+    }
+  }
+  else if(key == 'q'){
     gridState += 1;
     gridState %= 512;
     for(int i = 0; i < clusters.length; i++){
@@ -66,19 +55,4 @@ void keyPressed(){
       }
     }
   }
-  
-  //if(key == 'a'){
-  //  gridWidth /= 2;
-  //  gridHeight /= 2;
-  //  numGrids *= 4;
-  //  cols *= 2;
-  //  rows *= 2;
-  //  addGrids(numGrids);
-  //} else if (key == 'q'){
-  //  gridState += 1;
-  //  gridState %= 512;
-  //  for(int i = 0; i < grids.length; i++){
-  //    grids[i].setGridState(gridState);
-  //  }
-  //}
 }
