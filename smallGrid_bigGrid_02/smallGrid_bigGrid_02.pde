@@ -3,7 +3,7 @@ int rows = 1;
 
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
-//use sizes: 128, 256, 512, 1024, 2048
+//use sizes: 128, 256, 512, 1024, 2048, etc
 //apparently processing will not go smaller then 100 by 100 pixels so 128 is the minimum
 static final int CLUSTER_HEIGHT = 254;
 final int NUM_CLUSTERS = cols * rows;
