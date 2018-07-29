@@ -8,8 +8,44 @@ import java.util.Date;
 - cluster can request data by calling getNextValue(int clusterID)
 */
 class DataParser{
-  DataParser(){
+  String path;
+  int numClusters;
+  String[] files;
+  JSONArray[] values;
+  int[] valueIndices;
   
+  DataParser(String path, int numClusters){
+    this.path = path;
+    this.numClusters = numClusters;
+    File[] fileObjects = listFiles(this.path);
+    files = new String[fileObjects.length];
+    for(int i = 0; i < fileObjects.length; i++){
+      String absolutePath = fileObjects[i].getAbsolutePath();
+      files[i] = absolutePath;
+    }
+    
+    values = new JSONArray[files.length];
+    for(int i = 0; i < values.length; i++){
+      JSONObject json = loadJSONObject(files[i]);
+      JSONObject dataObject = json.getJSONArray("Data").getJSONObject(0);
+      values[i] = dataObject.getJSONArray("Data");
+    }
+    
+    valueIndices = new int[numClusters];
+    for(int i = 0; i < valueIndices.length; i++){
+      valueIndices[i] = 0;
+    }
+  }
+  
+  File[] listFiles(String dir) {
+    File file = new File(dir);
+    if (file.isDirectory()) {
+      File[] files = file.listFiles();
+      return files;
+    } else {
+      // If it's not a directory
+      return null;
+    }
   }
   
   int timeStampToEpoch(String timeStamp){

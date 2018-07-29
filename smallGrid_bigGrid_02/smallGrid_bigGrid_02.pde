@@ -9,6 +9,7 @@ static final int CLUSTER_HEIGHT = 254;
 final int NUM_CLUSTERS = cols * rows;
 
 Cluster[] clusters;
+DataParser dataParser;
 
 int gridState = 0;
 
@@ -17,6 +18,8 @@ void settings(){
 }
 
 void setup() {
+  //println(sketchPath()+"/data");
+  dataParser = new DataParser(sketchPath()+"/data", NUM_CLUSTERS);
   clusters = new Cluster[NUM_CLUSTERS];
   int y = 0;
   for(int i = 0; i < clusters.length; i++){
