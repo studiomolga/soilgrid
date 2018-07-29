@@ -33,6 +33,10 @@ class Grid{
   void setGridSize(int w, int h){
     this.w = w;
     this.h = h;
+    print("new grid size: ");
+    print(w);
+    print(", ");
+    println(h);
   }
   
   void setGridPos(int x, int y){
@@ -71,13 +75,14 @@ class Grid{
       Cell cell = cells[i];
       Coordinate coord = cell.getCoordinate();
       
-      int cellWidth = w / cols;
-      int cellHeight = h / rows;
+      float cellWidth = (float)w / (float)cols;
+      float cellHeight = (float)h / (float)rows;
+      float xCell = ((float)coord.x * cellWidth) + (float)x;
+      float yCell = ((float)coord.y * cellHeight) + (float)y;
       
-      //stroke(200);
       noStroke();
       fill(cell.getColor());
-      rect((coord.x * cellWidth) + x, (coord.y * cellHeight) + y, cellWidth, cellHeight);
+      rect(xCell, yCell, ceil(cellWidth), ceil(cellHeight));
     }
   }
 }
