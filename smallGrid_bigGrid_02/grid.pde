@@ -33,10 +33,6 @@ class Grid{
   void setGridSize(int w, int h){
     this.w = w;
     this.h = h;
-    print("new grid size: ");
-    print(w);
-    print(", ");
-    println(h);
   }
   
   void setGridPos(int x, int y){

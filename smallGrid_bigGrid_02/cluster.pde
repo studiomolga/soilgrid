@@ -30,6 +30,13 @@ class Cluster{
     return numGrids;
   }
   
+  void setGridStates(float[] states){
+    for(int i = 0; i < states.length; i++){
+      float value = (states[i] / 100.0) * 512;
+      setGridState(i, (int) value);
+    }
+  }
+  
   void setGridState(int gridIndex, int state){
     grids[gridIndex].setGridState(state);
   }
@@ -61,7 +68,6 @@ class Cluster{
       int xGrid = ((i % cols) * gridWidth) + x;
       int yGrid = ((i / rows) * gridHeight) + y;
       Grid grid = new Grid(gridCols, gridRows, xGrid, yGrid, gridWidth, gridHeight);
-      //grid.setGridState(gridState);
       grids = (Grid[]) append(grids, grid);
       
     }

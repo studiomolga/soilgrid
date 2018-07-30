@@ -2,17 +2,48 @@ import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
 
-/* notes to self:
-- we will make one instance of the dataparser object which will passed to all clusters by reference
-- a cluster will get assigned a file or portion of a dataset based on how many clusters and how many datasets are available, we will have to assign some ID number to each cluster
-- cluster can request data by calling getNextValue(int clusterID)
-*/
+class DataFile{
+  JSONArray data;
+  JSONObject currData;
+  int fileIndex;
+  int dataIndex;
+  int clusterIndex;
+  
+  DataFile(JSONObject json, int fileIndex, int clusterIndex){
+    JSONObject dataObject = json.getJSONArray("Data").getJSONObject(0);
+    data = dataObject.getJSONArray("Data");
+    this.fileIndex = fileIndex;
+    this.clusterIndex = clusterIndex;
+  }
+  
+  int getDataSize(){
+    return(data.size());
+  }
+  
+  void setDataIndex(int dataIndex){
+    this.dataIndex = dataIndex;
+    currData = data.getJSONObject(this.dataIndex);
+  }
+  
+  float[] getNextValues(int range){
+    float[] values = new float[range];
+    for(int i = 0; i < values.length; i++){
+      JSONObject value = data.getJSONObject((this.dataIndex + i) % data.size());
+      values[i] = value.getFloat("Value");
+    }
+    
+    dataIndex += 1;
+    dataIndex %= data.size();
+    setDataIndex(dataIndex);
+    return values;
+  }
+}
+
 class DataParser{
   String path;
   int numClusters;
   String[] files;
-  JSONArray[] values;
-  int[] valueIndices;
+  DataFile[] dataFiles;
   
   DataParser(String path, int numClusters){
     this.path = path;
@@ -20,21 +51,24 @@ class DataParser{
     File[] fileObjects = listFiles(this.path);
     files = new String[fileObjects.length];
     for(int i = 0; i < fileObjects.length; i++){
-      String absolutePath = fileObjects[i].getAbsolutePath();
+      String absolutePath = fileObjects[i].getAbsolutePath();   
       files[i] = absolutePath;
     }
     
-    values = new JSONArray[files.length];
-    for(int i = 0; i < values.length; i++){
-      JSONObject json = loadJSONObject(files[i]);
-      JSONObject dataObject = json.getJSONArray("Data").getJSONObject(0);
-      values[i] = dataObject.getJSONArray("Data");
+    dataFiles = new DataFile[numClusters];
+    int fileIndex = 0;
+    for(int i = 0; i < numClusters; i++){
+      if(i % files.length == 0) fileIndex += 1; 
+      DataFile dataFile = new DataFile(loadJSONObject(files[fileIndex - 1]), fileIndex - 1, i);
+      int offset = dataFile.getDataSize() / (numClusters / files.length);
+      dataFile.setDataIndex((i % files.length) * offset);
+      dataFiles[i] = dataFile;
     }
-    
-    valueIndices = new int[numClusters];
-    for(int i = 0; i < valueIndices.length; i++){
-      valueIndices[i] = 0;
-    }
+  }
+  
+  float[] getNextValues(int clusterId, int range){
+    //returns a new value when available otherwise it returns the current
+    return dataFiles[clusterId].getNextValues(range);
   }
   
   File[] listFiles(String dir) {
@@ -45,20 +79,6 @@ class DataParser{
     } else {
       // If it's not a directory
       return null;
-    }
-  }
-  
-  int timeStampToEpoch(String timeStamp){
-    try {
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
-      //sdf.setTimeZone(); if it turns out to be relevant we can try to set the timezones as they are available via the json data file
-      Date dt = sdf.parse(timeStamp);
-      long epoch = dt.getTime();
-      return (int)(epoch/1000);
-    } catch(ParseException e){
-      print("ERROR: ");
-      println(e);
-      return 0;
     }
   }
 }
