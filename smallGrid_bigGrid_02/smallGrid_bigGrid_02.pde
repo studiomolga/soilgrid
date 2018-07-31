@@ -21,7 +21,7 @@ int sizePeriodStart = 0;
 int numSizeChanges = 0;
 
 void settings(){
-  size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
+  size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows, P2D);
 }
 
 void setup() {
