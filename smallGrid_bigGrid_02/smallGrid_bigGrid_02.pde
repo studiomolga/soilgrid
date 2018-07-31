@@ -1,3 +1,6 @@
+import processing.awt.PSurfaceAWT;
+import processing.awt.PSurfaceAWT.SmoothCanvas;
+
 int cols = 4;
 int rows = 1;
 
@@ -21,7 +24,7 @@ int sizePeriodStart = 0;
 int numSizeChanges = 0;
 
 void settings(){
-  size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows, P2D);
+  size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
 }
 
 void setup() {
@@ -39,6 +42,12 @@ void setup() {
   
   dataPeriodStart = millis();
   sizePeriodStart = millis();
+}
+
+PSurface initSurface() {
+  PSurface pSurface = super.initSurface();
+  ( (SmoothCanvas) ((PSurfaceAWT)surface).getNative()).getFrame().setUndecorated(true);
+  return pSurface;
 }
 
 void draw() {
