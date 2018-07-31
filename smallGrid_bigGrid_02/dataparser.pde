@@ -58,11 +58,16 @@ class DataParser{
     dataFiles = new DataFile[numClusters];
     int fileIndex = 0;
     for(int i = 0; i < numClusters; i++){
-      if(i % files.length == 0) fileIndex += 1; 
-      DataFile dataFile = new DataFile(loadJSONObject(files[fileIndex - 1]), fileIndex - 1, i);
-      int offset = dataFile.getDataSize() / (numClusters / files.length);
-      dataFile.setDataIndex((i % files.length) * offset);
-      dataFiles[i] = dataFile;
+      if(numClusters / files.length > 0){
+        if(i % files.length == 0) fileIndex += 1; 
+        DataFile dataFile = new DataFile(loadJSONObject(files[fileIndex - 1]), fileIndex - 1, i);
+        int offset = dataFile.getDataSize() / (numClusters / files.length);
+        dataFile.setDataIndex((i % files.length) * offset);
+        dataFiles[i] = dataFile;
+      } else {
+        DataFile dataFile = new DataFile(loadJSONObject(files[i]), i, i);
+        dataFiles[i] = dataFile;
+      }
     }
   }
   

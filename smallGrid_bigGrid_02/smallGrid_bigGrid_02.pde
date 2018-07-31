@@ -1,8 +1,12 @@
 int cols = 4;
 int rows = 1;
 
+static final int DATA_PERIOD = 40;
+static final int SIZE_PERIOD = 2000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
+static final int MAX_SIZE_CHANGES = 6;
+
 //use sizes: 128, 256, 512, 1024, 2048, etc
 //apparently processing will not go smaller then 100 by 100 pixels so 128 is the minimum
 static final int CLUSTER_HEIGHT = 256;
@@ -12,8 +16,9 @@ Cluster[] clusters;
 DataParser dataParser;
 
 int gridState = 0;
-int PERIOD = 40;
-int periodStart = 0;
+int dataPeriodStart = 0;
+int sizePeriodStart = 0;
+int numSizeChanges = 0;
 
 void settings(){
   size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
@@ -32,7 +37,8 @@ void setup() {
     if(i % cols == cols - 1) y += 1;
   }
   
-  periodStart = millis();
+  dataPeriodStart = millis();
+  sizePeriodStart = millis();
 }
 
 void draw() {
@@ -42,12 +48,20 @@ void draw() {
     clusters[i].draw();
   }
   
-  if(millis() - periodStart >= PERIOD){
+  if(millis() - dataPeriodStart >= DATA_PERIOD){
     for(int i = 0; i < clusters.length; i++){
       float[] values = dataParser.getNextValues(i, clusters[i].getNumGrids());
       clusters[i].setGridStates(values);
-      periodStart = millis();
+      dataPeriodStart = millis();
     }
+  }
+  
+  if(millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges < MAX_SIZE_CHANGES){
+    for(int i = 0; i < clusters.length; i++){
+      clusters[i].expandGrid();
+    }
+    sizePeriodStart = millis();
+    numSizeChanges += 1;
   }
 }
 
