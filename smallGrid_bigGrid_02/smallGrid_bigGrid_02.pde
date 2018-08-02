@@ -72,7 +72,10 @@ void draw() {
     }
     sizePeriodStart = millis();
     numSizeChanges += 1;
+  } else if(millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges >= MAX_SIZE_CHANGES){
+    exit();
   }
+  
 }
 
 void mousePressed(){
