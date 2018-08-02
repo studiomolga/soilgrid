@@ -1,7 +1,7 @@
 class Coordinate {
   //a little helper class for containing a coordinate
   int x, y;
-  Coordinate(int x, int y){
+  Coordinate(int x, int y) {
     this.x = x;
     this.y = y;
   }
@@ -18,20 +18,20 @@ class Cell {
     this.index = index;
     this.clr = clr;
   }
-  
-  Coordinate getCoordinate(){
+
+  Coordinate getCoordinate() {
     return coord;
   }
-  
-  int getIndex(){
+
+  int getIndex() {
     return index;
   }
-  
-  color getColor(){
+
+  color getColor() {
     return clr;
   }
-  
-  void setColor(color clr){
+
+  void setColor(color clr) {
     this.clr = clr;
   }
 }
