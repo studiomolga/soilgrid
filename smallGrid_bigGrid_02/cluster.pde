@@ -38,6 +38,10 @@ class Cluster{
     for(int i = 0; i < states.length; i++){
       float value = (states[i] / 100.0) * 512;
       setGridState(i, (int) value);
+      if(i == 0){
+        float soundIndex = (states[i] / 100.0) * (float) soundEngine.getNumFiles();
+        soundEngine.play((int) soundIndex);
+      }
     }
   }
   

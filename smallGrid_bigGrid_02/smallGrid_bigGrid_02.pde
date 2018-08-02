@@ -4,8 +4,8 @@ import processing.awt.PSurfaceAWT.SmoothCanvas;
 int cols = 4;
 int rows = 1;
 
-static final int DATA_PERIOD = 40;
-static final int SIZE_PERIOD = 2000;
+static final int DATA_PERIOD = 100;
+static final int SIZE_PERIOD = 4000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
 static final int MAX_SIZE_CHANGES = 6;
@@ -17,6 +17,7 @@ final int NUM_CLUSTERS = cols * rows;
 
 Cluster[] clusters;
 DataParser dataParser;
+SoundEngine soundEngine;
 
 int gridState = 0;
 int dataPeriodStart = 0;
@@ -94,6 +95,11 @@ void keyPressed(){
       for(int j = 0; j < clusters[i].getNumGrids(); j++){
         clusters[i].setGridState(j, gridState);
       }
+    }
+  } else if(key == 'z'){          //TODO: remove this, just here for testing purposes
+    for(int i = 0; i < clusters.length; i++){
+      int soundIndex = int(random(clusters[i].soundEngine.getNumFiles()));
+      clusters[i].soundEngine.play(soundIndex);
     }
   }
 }
