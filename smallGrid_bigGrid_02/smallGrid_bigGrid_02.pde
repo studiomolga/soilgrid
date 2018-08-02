@@ -4,8 +4,8 @@ import processing.awt.PSurfaceAWT.SmoothCanvas;
 int cols = 4;
 int rows = 1;
 
-static final int DATA_PERIOD = 40;
-static final int SIZE_PERIOD = 2000;
+static final int DATA_PERIOD = 100;
+static final int SIZE_PERIOD = 4000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
 static final int MAX_SIZE_CHANGES = 6;
@@ -17,6 +17,7 @@ final int NUM_CLUSTERS = cols * rows;
 
 Cluster[] clusters;
 DataParser dataParser;
+SoundEngine soundEngine;
 
 int gridState = 0;
 int dataPeriodStart = 0;
@@ -28,14 +29,14 @@ void settings(){
 }
 
 void setup() {
-  dataParser = new DataParser(sketchPath()+"/data", NUM_CLUSTERS);
+  dataParser = new DataParser(sketchPath()+"/data/datafiles", NUM_CLUSTERS);
 
   clusters = new Cluster[NUM_CLUSTERS];
   int y = 0;
   for(int i = 0; i < clusters.length; i++){
     int xCluster = (i % cols) * CLUSTER_HEIGHT;
     int yCluster = y * CLUSTER_HEIGHT;
-    Cluster cluster = new Cluster(xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
+    Cluster cluster = new Cluster(this, xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
     clusters[i] = cluster;
     if(i % cols == cols - 1) y += 1;
   }
@@ -94,6 +95,11 @@ void keyPressed(){
       for(int j = 0; j < clusters[i].getNumGrids(); j++){
         clusters[i].setGridState(j, gridState);
       }
+    }
+  } else if(key == 'z'){          //TODO: remove this, just here for testing purposes
+    for(int i = 0; i < clusters.length; i++){
+      int soundIndex = int(random(clusters[i].soundEngine.getNumFiles()));
+      clusters[i].soundEngine.play(soundIndex);
     }
   }
 }

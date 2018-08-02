@@ -7,8 +7,9 @@ class Cluster{
   Grid[] grids;
   int cols = 1;
   int rows = 1;
+  SoundEngine soundEngine;
   
-  Cluster(int x, int y, int w, int h, int gridCols, int gridRows){
+  Cluster(PApplet parent, int x, int y, int w, int h, int gridCols, int gridRows){
     this.x = x;
     this.y = y;
     this.w = w;
@@ -17,6 +18,9 @@ class Cluster{
     gridHeight = h;
     this.gridCols = gridCols;
     this.gridRows = gridRows;
+    
+    soundEngine = new SoundEngine(parent, sketchPath()+"/data/sounds");
+    
     grids = new Grid[numGrids];
     for(int i = 0; i < grids.length; i++){
       int xGrid = ((i % cols) * gridWidth) + x;
@@ -34,6 +38,10 @@ class Cluster{
     for(int i = 0; i < states.length; i++){
       float value = (states[i] / 100.0) * 512;
       setGridState(i, (int) value);
+      if(i == 0){
+        float soundIndex = (states[i] / 100.0) * (float) soundEngine.getNumFiles();
+        soundEngine.play((int) soundIndex);
+      }
     }
   }
   
