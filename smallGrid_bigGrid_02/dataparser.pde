@@ -22,7 +22,6 @@ class DataFile {
 
   void setDataIndex(int dataIndex) {
     this.dataIndex = dataIndex;
-    //println(data.size());
     currData = data.getJSONObject(this.dataIndex);
   }
 
@@ -54,17 +53,21 @@ class DataParser {
     for (int i = 0; i < fileObjects.length; i++) {
       String absolutePath = fileObjects[i].getAbsolutePath();   
       files[i] = absolutePath;
-      println(absolutePath);
+      //println(absolutePath);
     }
 
     dataFiles = new DataFile[numClusters];
     int fileIndex = 0;
     for (int i = 0; i < numClusters; i++) {
-      if (numClusters / files.length > 1) {
-        if (i % files.length == 0) fileIndex += 1; 
-        DataFile dataFile = new DataFile(loadJSONObject(files[fileIndex - 1]), fileIndex - 1, i);
-        int offset = (dataFile.getDataSize() / (numClusters / files.length)) % dataFile.getDataSize();
-        dataFile.setDataIndex((i % files.length) * offset);
+      float filePerCluster = (float) numClusters / (float) files.length;
+      if (filePerCluster > 1) {
+        if (i % (int) filePerCluster == 0){
+          fileIndex += 1; 
+          fileIndex %= files.length;
+        }
+        DataFile dataFile = new DataFile(loadJSONObject(files[fileIndex]), fileIndex, i);
+        int offset = (dataFile.getDataSize() / (int)filePerCluster) * (i % (int) filePerCluster);
+        dataFile.setDataIndex(offset);
         dataFiles[i] = dataFile;
       } else {
         DataFile dataFile = new DataFile(loadJSONObject(files[i]), i, i);
