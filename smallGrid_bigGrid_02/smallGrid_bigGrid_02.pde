@@ -28,14 +28,14 @@ void settings(){
 }
 
 void setup() {
-  dataParser = new DataParser(sketchPath()+"/data", NUM_CLUSTERS);
+  dataParser = new DataParser(sketchPath()+"/data/datafiles", NUM_CLUSTERS);
 
   clusters = new Cluster[NUM_CLUSTERS];
   int y = 0;
   for(int i = 0; i < clusters.length; i++){
     int xCluster = (i % cols) * CLUSTER_HEIGHT;
     int yCluster = y * CLUSTER_HEIGHT;
-    Cluster cluster = new Cluster(xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
+    Cluster cluster = new Cluster(this, xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
     clusters[i] = cluster;
     if(i % cols == cols - 1) y += 1;
   }
