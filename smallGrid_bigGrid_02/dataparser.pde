@@ -53,7 +53,6 @@ class DataParser {
     for (int i = 0; i < fileObjects.length; i++) {
       String absolutePath = fileObjects[i].getAbsolutePath();   
       files[i] = absolutePath;
-      //println(absolutePath);
     }
 
     dataFiles = new DataFile[numClusters];
