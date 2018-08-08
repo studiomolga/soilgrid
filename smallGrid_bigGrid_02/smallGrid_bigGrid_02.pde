@@ -18,6 +18,11 @@ final int NUM_CLUSTERS = cols * rows;
 Cluster[] clusters;
 DataParser dataParser;
 
+//we make a soundengine instance here, use MAX_SIZE_CHANGES to dertermine how many voices the Sampler instances should use
+//maximum number voices is (4^MAX_SIZE_CHANGE) * NUM_CLUSTERS = 16384
+//that number is very big, probably too big, so we will have to use a fraction of it maybe simply 1/4 or the size of one single cluster
+//what this will mean for the volume is a bigger mystery, we have to use 1/4096 in the multiplier at the end
+
 int gridState = 0;
 int dataPeriodStart = 0;
 int sizePeriodStart = 0;
@@ -35,6 +40,7 @@ void setup() {
   for (int i = 0; i < clusters.length; i++) {
     int xCluster = (i % cols) * CLUSTER_HEIGHT;
     int yCluster = y * CLUSTER_HEIGHT;
+    //we should pass a reference of the soundengine instance via cluster down the grids, where the play method can be called
     Cluster cluster = new Cluster(this, xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
     clusters[i] = cluster;
     if (i % cols == cols - 1) y += 1;
@@ -68,6 +74,7 @@ void draw() {
   if (millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges < MAX_SIZE_CHANGES) {
     for (int i = 0; i < clusters.length; i++) {
       clusters[i].expandGrid();
+      //here we should determine the new volume for each sample in the sound engine with 1.0 / maximum_voices
     }
     sizePeriodStart = millis();
     numSizeChanges += 1;

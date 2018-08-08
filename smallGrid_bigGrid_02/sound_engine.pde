@@ -4,7 +4,7 @@ import ddf.minim.ugens.*;
 
 //TODO: this class could extend or implement FilePlayer
 class SoundFile {
-  FilePlayer filePlayer;
+  FilePlayer filePlayer;  //change for Sampler class
   Multiplier multiplier;
   String path;
 
@@ -37,7 +37,7 @@ class SoundEngine {
     out = minim.getLineOut();
     playIndex = -1;
 
-    File[] fileObjects = listFiles(path);
+    File[] fileObjects = listFiles(path);        //check if this returns in aplhabetical order, otherwise sort the list
     soundFiles = new SoundFile[fileObjects.length];
     for (int i = 0; i < soundFiles.length; i++) {
       String absolutePath = fileObjects[i].getAbsolutePath();   
@@ -51,7 +51,7 @@ class SoundEngine {
 
   void play(int index) {
     if (!soundFiles[index].isPlaying()) {
-      soundFiles[index].play();
+      soundFiles[index].play();              //.play should turn to trigger
     }
   }
 
