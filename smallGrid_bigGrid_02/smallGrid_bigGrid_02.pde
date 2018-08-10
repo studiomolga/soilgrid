@@ -39,7 +39,7 @@ void setup() {
   clusters = new Cluster[NUM_CLUSTERS];
   //the voices will have to be fixed, it means that maybe not all grids will be playing audio but the feeling will remain the same
   soundEngine = new SoundEngine(this, sketchPath()+"/data/sounds", SOUND_ENGINE_VOICES); 
-  float amplitude = 1.0f / 24.0f;
+  float amplitude = 1.0f / 48.0f;
   soundEngine.setAmplitude(amplitude);
   
   int y = 0;
