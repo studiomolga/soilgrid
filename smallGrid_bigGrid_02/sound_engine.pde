@@ -1,28 +1,23 @@
 import ddf.minim.*;
-import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
-//TODO: this class could extend or implement FilePlayer
 class SoundFile {
-  FilePlayer filePlayer;  //change for Sampler class
-  Multiplier multiplier;
-  String path;
+  Sampler sample;
+  Constant amp;
 
-  SoundFile(Minim minim, AudioOutput out, String path) {
-    this.path = path;
-
-    filePlayer = new FilePlayer(minim.loadFileStream(this.path));
-    multiplier = new Multiplier(0.1f);
-    filePlayer.patch(multiplier).patch(out);
+  SoundFile(Minim minim, AudioOutput out, String path, int voices) {
+    sample = new Sampler(path, voices, minim);
+    amp = new Constant(0.1f);
+    amp.patch(sample.amplitude);
+    sample.patch(out);
   }
 
-  boolean isPlaying() {
-    return filePlayer.isPlaying();
+  void amplitude(float val){
+    amp.setConstant(val);
   }
 
   void play() {
-    filePlayer.rewind();
-    filePlayer.play();
+    sample.trigger();
   }
 }
 
@@ -32,34 +27,44 @@ class SoundEngine {
   SoundFile[] soundFiles;
   int playIndex;
 
-  SoundEngine(PApplet parent, String path) {
+  SoundEngine(PApplet parent, String path, int voices) {
     minim = new Minim(parent);
     out = minim.getLineOut();
     playIndex = -1;
 
-    File[] fileObjects = listFiles(path);        //check if this returns in aplhabetical order, otherwise sort the list
-    soundFiles = new SoundFile[fileObjects.length];
+    String[] fileNames = listFiles(path);
+    printArray(fileNames);
+    soundFiles = new SoundFile[fileNames.length];
     for (int i = 0; i < soundFiles.length; i++) {
-      String absolutePath = fileObjects[i].getAbsolutePath();   
-      soundFiles[i] = new SoundFile(minim, out, absolutePath);
+      soundFiles[i] = new SoundFile(minim, out, fileNames[i], voices);
     }
   }
 
   int getNumFiles() {
     return soundFiles.length;
   }
-
-  void play(int index) {
-    if (!soundFiles[index].isPlaying()) {
-      soundFiles[index].play();              //.play should turn to trigger
+  
+  void setAmplitude(float amp){
+    for(SoundFile soundFile : soundFiles){
+      soundFile.amplitude(amp);
     }
   }
 
-  File[] listFiles(String dir) {
+  void play(int index) {
+    soundFiles[index].play();
+  }
+
+  String[] listFiles(String dir) {
     File file = new File(dir);
     if (file.isDirectory()) {
-      File[] files = file.listFiles();
-      return files;
+      File files[] = file.listFiles();
+      String names[] = new String[files.length];
+      for(int i = 0; i < files.length; i++){
+        String absolutePath = files[i].getAbsolutePath();
+        names[i] = absolutePath;
+      }
+      names = sort(names);
+      return names;
     } else {
       // If it's not a directory
       return null;

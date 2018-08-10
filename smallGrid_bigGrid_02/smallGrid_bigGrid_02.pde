@@ -9,6 +9,7 @@ static final int SIZE_PERIOD = 4000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
 static final int MAX_SIZE_CHANGES = 6;
+static final int SOUND_ENGINE_VOICES = 128;
 
 //use sizes: 128, 256, 512, 1024, 2048, etc
 //apparently processing will not go smaller then 100 by 100 pixels so 128 is the minimum
@@ -17,6 +18,7 @@ final int NUM_CLUSTERS = cols * rows;
 
 Cluster[] clusters;
 DataParser dataParser;
+SoundEngine soundEngine;
 
 //we make a soundengine instance here, use MAX_SIZE_CHANGES to dertermine how many voices the Sampler instances should use
 //maximum number voices is (4^MAX_SIZE_CHANGE) * NUM_CLUSTERS = 16384
@@ -34,14 +36,17 @@ void settings() {
 
 void setup() {
   dataParser = new DataParser(sketchPath()+"/data/datafiles", NUM_CLUSTERS);
-
   clusters = new Cluster[NUM_CLUSTERS];
+  //the voices will have to be fixed, it means that maybe not all grids will be playing audio but the feeling will remain the same
+  soundEngine = new SoundEngine(this, sketchPath()+"/data/sounds", SOUND_ENGINE_VOICES); 
+  float amplitude = 1.0f / 24.0f;
+  soundEngine.setAmplitude(amplitude);
+  
   int y = 0;
   for (int i = 0; i < clusters.length; i++) {
     int xCluster = (i % cols) * CLUSTER_HEIGHT;
     int yCluster = y * CLUSTER_HEIGHT;
-    //we should pass a reference of the soundengine instance via cluster down the grids, where the play method can be called
-    Cluster cluster = new Cluster(this, xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS);
+    Cluster cluster = new Cluster(xCluster, yCluster, CLUSTER_HEIGHT, CLUSTER_HEIGHT, GRID_COLS, GRID_ROWS, soundEngine);
     clusters[i] = cluster;
     if (i % cols == cols - 1) y += 1;
   }
@@ -76,6 +81,8 @@ void draw() {
       clusters[i].expandGrid();
       //here we should determine the new volume for each sample in the sound engine with 1.0 / maximum_voices
     }
+    //float amplitude = pow(4, -numSizeChanges);
+    //soundEngine.setAmplitude(0.3f);
     sizePeriodStart = millis();
     numSizeChanges += 1;
   } else if (millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges >= MAX_SIZE_CHANGES) {
