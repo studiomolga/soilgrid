@@ -2,16 +2,14 @@ class Grid {
   //class that represents a grid
   int cols, rows, x, y, w, h, currState;
   Cell[] cells;
-  SoundEngine soundEngine;
 
-  Grid(int cols, int rows, int x, int y, int w, int h, SoundEngine soundEngine) {
+  Grid(int cols, int rows, int x, int y, int w, int h) {
     this.cols = cols;
     this.rows = rows;
     this.w = w;
     this.h = h;
     this.x = x;
     this.y = y;
-    this.soundEngine = soundEngine;
 
     cells = new Cell[this.cols * this.rows];
     for (int i = 0; i < cells.length; i++) {
@@ -69,9 +67,6 @@ class Grid {
           cells[abs(binaryChars.length - i) - 1].setColor(color(0));
         }
       }
-      float fileIndex = ((float)currState / 512.0f) * (float) soundEngine.getNumFiles();
-      //println(fileIndex);
-      soundEngine.play((int) fileIndex);
     }
   }
 

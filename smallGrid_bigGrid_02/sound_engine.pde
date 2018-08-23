@@ -21,25 +21,20 @@ class SoundFile {
   }
 }
 
-class SoundEngine {
-  Minim minim;
-  AudioOutput out;
+class SoundLibrary {
   SoundFile[] soundFiles;
-  int playIndex;
-
-  SoundEngine(PApplet parent, String path, int voices) {
-    minim = new Minim(parent);
-    out = minim.getLineOut();
-    playIndex = -1;
-
-    String[] fileNames = listFiles(path);
-    printArray(fileNames);
-    soundFiles = new SoundFile[fileNames.length];
-    for (int i = 0; i < soundFiles.length; i++) {
-      soundFiles[i] = new SoundFile(minim, out, fileNames[i], voices);
+  
+  SoundLibrary(Minim minim, AudioOutput out, String path, int voices){
+    String files[] = listFiles(path);
+    printArray(files);
+    println("-------------");
+    soundFiles = new SoundFile[files.length];
+    for(int i = 0; i < soundFiles.length; i++){
+      SoundFile soundFile = new SoundFile(minim, out, files[i], voices);
+      soundFiles[i] = soundFile;
     }
   }
-
+  
   int getNumFiles() {
     return soundFiles.length;
   }
@@ -53,7 +48,7 @@ class SoundEngine {
   void play(int index) {
     soundFiles[index].play();
   }
-
+  
   String[] listFiles(String dir) {
     File file = new File(dir);
     if (file.isDirectory()) {
@@ -67,6 +62,61 @@ class SoundEngine {
       return names;
     } else {
       // If it's not a directory
+      return null;
+    }
+  }
+}
+
+class SoundEngine {
+  Minim minim;
+  AudioOutput out;
+  SoundLibrary[] soundLibraries;
+  int lid;
+
+  SoundEngine(PApplet parent, String path, int voices, int clusters) {
+    minim = new Minim(parent);
+    out = minim.getLineOut();
+    lid = 0;
+  
+    String libDirs[] = listDirs(path);
+    soundLibraries = new SoundLibrary[libDirs.length];
+    for(int i = 0; i < libDirs.length; i++){
+      SoundLibrary soundLibrary = new SoundLibrary(minim, out, libDirs[i], voices);
+      soundLibrary.setAmplitude(0.75f / (float) clusters);
+      soundLibraries[i] = soundLibrary;
+    }
+  }
+  
+  void setLibrary(int lid){
+    this.lid = lid;
+  }
+  
+  int getNumLibraries(){
+    return soundLibraries.length;
+  }
+
+  int getNumFiles() {
+    return soundLibraries[lid].getNumFiles();
+  }
+
+  void play(int index) {
+    soundLibraries[lid].play(index);
+  }
+  
+  String[] listDirs(String path) {
+    File filepath = new File(path);
+    if(filepath.isDirectory()) {
+      File files[] = filepath.listFiles();
+      String names[] = {};
+      for(File file : files){
+        if(file.isDirectory()){
+          String absPath = file.getAbsolutePath();
+          names = append(names, absPath);
+        }
+      }
+      names = sort(names);
+      return names;
+    } else {
       return null;
     }
   }

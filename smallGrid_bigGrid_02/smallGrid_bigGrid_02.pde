@@ -9,26 +9,22 @@ static final int SIZE_PERIOD = 4000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
 static final int MAX_SIZE_CHANGES = 6;
-static final int SOUND_ENGINE_VOICES = 128;
 
 //use sizes: 128, 256, 512, 1024, 2048, etc
 //apparently processing will not go smaller then 100 by 100 pixels so 128 is the minimum
 static final int CLUSTER_HEIGHT = 256;
 final int NUM_CLUSTERS = cols * rows;
+final int SOUND_ENGINE_VOICES = NUM_CLUSTERS;
 
 Cluster[] clusters;
 DataParser dataParser;
 SoundEngine soundEngine;
 
-//we make a soundengine instance here, use MAX_SIZE_CHANGES to dertermine how many voices the Sampler instances should use
-//maximum number voices is (4^MAX_SIZE_CHANGE) * NUM_CLUSTERS = 16384
-//that number is very big, probably too big, so we will have to use a fraction of it maybe simply 1/4 or the size of one single cluster
-//what this will mean for the volume is a bigger mystery, we have to use 1/4096 in the multiplier at the end
-
 int gridState = 0;
 int dataPeriodStart = 0;
 int sizePeriodStart = 0;
 int numSizeChanges = 0;
+int soundLibIndex = 0;
 
 void settings() {
   size(CLUSTER_HEIGHT * cols, CLUSTER_HEIGHT * rows);
@@ -37,11 +33,8 @@ void settings() {
 void setup() {
   dataParser = new DataParser(sketchPath()+"/data/datafiles", NUM_CLUSTERS);
   clusters = new Cluster[NUM_CLUSTERS];
-  //the voices will have to be fixed, it means that maybe not all grids will be playing audio but the feeling will remain the same
-  soundEngine = new SoundEngine(this, sketchPath()+"/data/sounds", SOUND_ENGINE_VOICES); 
-  float amplitude = 1.0f / 48.0f;
-  soundEngine.setAmplitude(amplitude);
-  
+  soundEngine = new SoundEngine(this, sketchPath()+"/data/sounds", SOUND_ENGINE_VOICES * 4, NUM_CLUSTERS); 
+
   int y = 0;
   for (int i = 0; i < clusters.length; i++) {
     int xCluster = (i % cols) * CLUSTER_HEIGHT;
@@ -74,16 +67,22 @@ void draw() {
       clusters[i].setGridStates(values);
       dataPeriodStart = millis();
     }
+    println("----------");
   }
 
   if (millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges < MAX_SIZE_CHANGES) {
     for (int i = 0; i < clusters.length; i++) {
       clusters[i].expandGrid();
-      //here we should determine the new volume for each sample in the sound engine with 1.0 / maximum_voices
     }
-    //float amplitude = pow(4, -numSizeChanges);
-    //soundEngine.setAmplitude(0.3f);
     sizePeriodStart = millis();
+    if(numSizeChanges % (ceil((float) MAX_SIZE_CHANGES / (float)soundEngine.getNumLibraries())) == 0 && numSizeChanges != 0){
+      soundLibIndex += 1;
+      soundEngine.setLibrary(soundLibIndex);
+      //print("lib index: ");
+      //println(soundLibIndex);
+    }
+    //print("size changes: ");
+    //println(numSizeChanges);
     numSizeChanges += 1;
   } else if (millis() - sizePeriodStart >= SIZE_PERIOD && numSizeChanges >= MAX_SIZE_CHANGES) {
     //TODO: put something here that properly closes the soundengine!!
