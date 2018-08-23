@@ -4,8 +4,8 @@ import processing.awt.PSurfaceAWT.SmoothCanvas;
 int cols = 4;
 int rows = 1;
 
-static final int DATA_PERIOD = 100;
-static final int SIZE_PERIOD = 4000;
+static final int DATA_PERIOD = 1000;
+static final int SIZE_PERIOD = 6000;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
 static final int MAX_SIZE_CHANGES = 6;
