@@ -1,6 +1,6 @@
 class Grid {
   //class that represents a grid
-  int cols, rows, x, y, w, h;
+  int cols, rows, x, y, w, h, currState;
   Cell[] cells;
 
   Grid(int cols, int rows, int x, int y, int w, int h) {
@@ -18,7 +18,8 @@ class Grid {
       Cell cell = new Cell(xCell, yCell, i, color(255));
       cells[i] = cell;
     }
-
+  
+    currState = -1;
     setGridState(0);
   }
 
@@ -55,13 +56,16 @@ class Grid {
   }
 
   void setGridState(int state) {
-    String binaryString = binary(state, cells.length);
-    char[] binaryChars = binaryString.toCharArray();
-    for (int i = 0; i < binaryChars.length; i++) {
-      if (binaryChars[i] == '0') {
-        cells[abs(binaryChars.length - i) - 1].setColor(color(255));
-      } else {
-        cells[abs(binaryChars.length - i) - 1].setColor(color(0));
+    if(state != currState){
+      currState = state;
+      String binaryString = binary(currState, cells.length);
+      char[] binaryChars = binaryString.toCharArray();
+      for (int i = 0; i < binaryChars.length; i++) {
+        if (binaryChars[i] == '0') {
+          cells[abs(binaryChars.length - i) - 1].setColor(color(255));
+        } else {
+          cells[abs(binaryChars.length - i) - 1].setColor(color(0));
+        }
       }
     }
   }

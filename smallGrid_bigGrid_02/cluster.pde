@@ -1,3 +1,5 @@
+import papaya.*;
+
 class Cluster {
   //Cluster represent a cluster of grids
   int x, y, w, h;
@@ -9,7 +11,7 @@ class Cluster {
   int rows = 1;
   SoundEngine soundEngine;
 
-  Cluster(PApplet parent, int x, int y, int w, int h, int gridCols, int gridRows) {
+  Cluster(int x, int y, int w, int h, int gridCols, int gridRows, SoundEngine soundEngine) {
     this.x = x;
     this.y = y;
     this.w = w;
@@ -18,8 +20,8 @@ class Cluster {
     gridHeight = h;
     this.gridCols = gridCols;
     this.gridRows = gridRows;
-
-    soundEngine = new SoundEngine(parent, sketchPath()+"/data/sounds");
+    
+    this.soundEngine = soundEngine;
 
     grids = new Grid[numGrids];
     for (int i = 0; i < grids.length; i++) {
@@ -38,11 +40,15 @@ class Cluster {
     for (int i = 0; i < states.length; i++) {
       float value = (states[i] / 100.0) * 512;
       setGridState(i, (int) value);
-      if (i == 0) {
-        float soundIndex = (states[i] / 100.0) * (float) soundEngine.getNumFiles();
-        soundEngine.play((int) soundIndex);
-      }
     }
+    //print("mean: ");
+    //println(Descriptive.var(states, true));
+    //print("file id: ");
+    //println(round(Descriptive.var(states, true)) % (float) soundEngine.getNumFiles());
+    float soundIndex = round((Descriptive.mean(states) / 100.0f) * (float) soundEngine.getNumFiles());
+    //float soundIndex = round(Descriptive.var(states, true)) % (float) soundEngine.getNumFiles();
+    soundEngine.play((int) soundIndex);
+    println((int) soundIndex);
   }
 
   void setGridState(int gridIndex, int state) {
