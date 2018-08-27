@@ -1,60 +1,44 @@
-class Grid {
-  //class that represents a grid
-  int cols, rows, x, y, w, h, currState;
-  Cell[] cells;
-
-  Grid(int cols, int rows, int x, int y, int w, int h) {
+class Grid{
+  int cols;
+  int rows;
+  Coordinate pos;
+  int cellSize;
+  int currState;
+  Cell cells[];
+  
+  Grid(int cols, int rows, Coordinate pos, int cellSize){
     this.cols = cols;
     this.rows = rows;
-    this.w = w;
-    this.h = h;
-    this.x = x;
-    this.y = y;
-
-    cells = new Cell[this.cols * this.rows];
-    for (int i = 0; i < cells.length; i++) {
-      int xCell = i % cols;
-      int yCell = i / cols;
-      Cell cell = new Cell(xCell, yCell, i, color(255));
+    this.pos = pos;
+    this.cellSize = cellSize;
+    
+    //init cells
+    cells = new Cell[cols * rows];
+    for(int i = 0; i < cells.length; i++){
+      Coordinate cellPos = new Coordinate((int) i % cols, (int) i / cols);
+      Cell cell = new Cell(cellPos, i, color(255));
       cells[i] = cell;
     }
-  
+    
     currState = -1;
     setGridState(0);
   }
-
-  void setCellColor(int cellIndex, color clr) {
-    cells[cellIndex].setColor(clr);
+  
+  void setCellSize(int size){
+    cellSize = size;
   }
-
-  color getCellColor(int cellIndex) {
-    return cells[cellIndex].getColor();
+  
+  void setPos(Coordinate pos){
+    this.pos = pos;
   }
-
-  void setGridSize(int w, int h) {
-    this.w = w;
-    this.h = h;
-  }
-
-  void setGridPos(int x, int y) {
-    this.x = x;
-    this.y = y;
-  }
-
-  int getNumCells() {
-    return cells.length;
-  }
-
-  void randomize() {
-    int randCellIndex = int(random(getNumCells()));
-
-    if (getCellColor(randCellIndex) == color(255)) {
-      setCellColor(randCellIndex, color(0));
-    } else {
-      setCellColor(randCellIndex, color(255));
+  
+  void randomize(){
+    for(Cell cell : cells){
+      int randClr = ((int) random(2)) * 255;
+      cell.setColor(color(randClr));
     }
   }
-
+  
   void setGridState(int state) {
     if(state != currState){
       currState = state;
@@ -69,20 +53,18 @@ class Grid {
       }
     }
   }
-
-  void draw() {
-    for (int i = 0; i < cells.length; i++) {
-      Cell cell = cells[i];
-      Coordinate coord = cell.getCoordinate();
-
-      float cellWidth = (float)w / (float)cols;
-      float cellHeight = (float)h / (float)rows;
-      float xCell = ((float)coord.x * cellWidth) + (float)x;
-      float yCell = ((float)coord.y * cellHeight) + (float)y;
-
-      noStroke();
-      fill(cell.getColor());
-      rect(xCell, yCell, ceil(cellWidth), ceil(cellHeight));
+  
+  void display(){
+    for(int i = 0; i < cells.length; i++){
+      Coordinate normCellPos = cells[i].getPos();
+      Coordinate cellPos = normCellPos.multiply(cellSize);
+      color cellClr = cells[i].getColor();
+      
+      for(int y = cellPos.y; y < (cellPos.y + cellSize); y++){
+        for(int x = cellPos.x; x < (cellPos.x + cellSize); x++){
+          set(x + pos.x, y + pos.y, cellClr);
+        }
+      }
     }
   }
 }

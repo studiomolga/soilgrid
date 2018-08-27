@@ -1,94 +1,97 @@
 import papaya.*;
 
-class Cluster {
-  //Cluster represent a cluster of grids
-  int x, y, w, h;
-  int gridCols, gridRows;
-  int gridWidth, gridHeight;
-  int numGrids = 1;
-  Grid[] grids;
-  int cols = 1;
-  int rows = 1;
-  SoundEngine soundEngine;
-
-  Cluster(int x, int y, int w, int h, int gridCols, int gridRows, SoundEngine soundEngine) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    gridWidth = w;
-    gridHeight = h;
+class Cluster{
+  Coordinate pos;
+  int gridCols;
+  int gridRows;
+  int clusterCols;
+  int clusterRows;
+  int maxCellSize;
+  int numGrids;
+  int sizeChanges;
+  
+  Grid grids[];
+  
+  Cluster(Coordinate pos, int gridCols, int gridRows, int maxCellSize, int sizeChanges){
+    this.pos = pos;
     this.gridCols = gridCols;
     this.gridRows = gridRows;
+    this.maxCellSize = maxCellSize;
+    clusterCols = 1;
+    clusterRows = 1;
+    numGrids = 1;
+    this.sizeChanges = sizeChanges;
     
-    this.soundEngine = soundEngine;
-
     grids = new Grid[numGrids];
-    for (int i = 0; i < grids.length; i++) {
-      int xGrid = ((i % cols) * gridWidth) + x;
-      int yGrid = ((i / rows) * gridHeight) + y;
-      Grid grid = new Grid(this.gridCols, this.gridRows, xGrid, yGrid, gridWidth, gridHeight);
+    for(int i = 0; i < grids.length; i++){
+      int gridWidth = maxCellSize * gridCols;
+      int gridHeight = maxCellSize * gridRows;
+      int xGrid = ((i % clusterCols) * gridWidth) + pos.x;
+      int yGrid = ((i / clusterRows) * gridHeight) + pos.y;
+      Grid grid = new Grid(gridCols, gridRows, new Coordinate(xGrid, yGrid), maxCellSize);
       grids[i] = grid;
     }
   }
-
+  
   int getNumGrids() {
     return numGrids;
   }
-
+  
   void setGridStates(float[] states) {
     for (int i = 0; i < states.length; i++) {
       float value = (states[i] / 100.0) * 512;
       setGridState(i, (int) value);
     }
-    //print("mean: ");
-    //println(Descriptive.var(states, true));
-    //print("file id: ");
-    //println(round(Descriptive.var(states, true)) % (float) soundEngine.getNumFiles());
     float soundIndex = round((Descriptive.mean(states) / 100.0f) * (float) soundEngine.getNumFiles());
-    //float soundIndex = round(Descriptive.var(states, true)) % (float) soundEngine.getNumFiles();
     soundEngine.play((int) soundIndex);
-    println((int) soundIndex);
+    //println((int) soundIndex);
   }
-
+  
   void setGridState(int gridIndex, int state) {
     grids[gridIndex].setGridState(state);
   }
-
+  
   void randomize() {
     for (int i = 0; i < grids.length; i++) {
       grids[i].randomize();
     }
   }
-
-  void expandGrid() {
-    gridWidth /= 2;
-    gridHeight /= 2;
-    numGrids *= 4;
-    cols *= 2;
-    rows *= 2;
-    addGrids(numGrids);
+  
+  void increaseGrids(){
+    if(sizeChanges > 1){
+      sizeChanges -= 1;
+      maxCellSize = (int) pow(2, sizeChanges);
+      numGrids *= 4;
+      clusterCols *= 2;
+      clusterRows *= 2;
+      addGrids(numGrids);
+    } else {
+      sizeChanges = 1;
+    }
   }
 
-  void addGrids(int amount) {
+  void addGrids(int amount){
+    int gridWidth = maxCellSize * gridCols;
+    int gridHeight = maxCellSize * gridRows;
+    
     for (int i = 0; i < grids.length; i++) {
-      int xGrid = ((i % cols) * gridWidth) + x;
-      int yGrid = ((i / rows) * gridHeight) + y;
-      grids[i].setGridSize(gridWidth, gridHeight);
-      grids[i].setGridPos(xGrid, yGrid);
+      int xGrid = ((i % clusterCols) * gridWidth) + pos.x;
+      int yGrid = ((i / clusterRows) * gridHeight) + pos.y;
+      grids[i].setCellSize(maxCellSize);
+      grids[i].setPos(new Coordinate(xGrid, yGrid));
     }
-
+    
     for (int i = grids.length; i < amount; i++) {
-      int xGrid = ((i % cols) * gridWidth) + x;
-      int yGrid = ((i / rows) * gridHeight) + y;
-      Grid grid = new Grid(gridCols, gridRows, xGrid, yGrid, gridWidth, gridHeight);
+      int xGrid = ((i % clusterCols) * gridWidth) + pos.x;
+      int yGrid = ((i / clusterRows) * gridHeight) + pos.y;
+      Grid grid = new Grid(gridCols, gridRows, new Coordinate(xGrid, yGrid), maxCellSize);
       grids = (Grid[]) append(grids, grid);
     }
   }
-
-  void draw() {
-    for (int i = 0; i < grids.length; i++) {
-      grids[i].draw();
+  
+  void display(){
+    for(Grid grid : grids){
+      grid.display();
     }
   }
 }
