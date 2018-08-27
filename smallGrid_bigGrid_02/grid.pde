@@ -54,15 +54,27 @@ class Grid{
     }
   }
   
-  void display(){
+  //we could add a random pixel percentage here, given as an argument and passed down from the main sketch throught the cluster object
+  void display(float noisePerc){
     for(int i = 0; i < cells.length; i++){
+      //float noisePerc = 50.0f;
       Coordinate normCellPos = cells[i].getPos();
       Coordinate cellPos = normCellPos.multiply(cellSize);
       color cellClr = cells[i].getColor();
       
       for(int y = cellPos.y; y < (cellPos.y + cellSize); y++){
         for(int x = cellPos.x; x < (cellPos.x + cellSize); x++){
-          set(x + pos.x, y + pos.y, cellClr);
+          if(random(100) < noisePerc){
+            int randomClr = ((int) random(2)) * 255;
+            set(x + pos.x, y + pos.y, color(randomClr));
+          } else {
+            set(x + pos.x, y + pos.y, cellClr);
+          }
+          
+          
+          
+          //println(red(randClr));
+          
         }
       }
     }

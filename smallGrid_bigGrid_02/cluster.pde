@@ -9,6 +9,7 @@ class Cluster{
   int maxCellSize;
   int numGrids;
   int sizeChanges;
+  float noisePerc;
   
   Grid grids[];
   
@@ -21,6 +22,7 @@ class Cluster{
     clusterRows = 1;
     numGrids = 1;
     this.sizeChanges = sizeChanges;
+    noisePerc = 0;
     
     grids = new Grid[numGrids];
     for(int i = 0; i < grids.length; i++){
@@ -89,9 +91,13 @@ class Cluster{
     }
   }
   
+  void setNoisePerc(float noisePerc){
+    this.noisePerc = noisePerc;
+  }
+  
   void display(){
     for(Grid grid : grids){
-      grid.display();
+      grid.display(noisePerc);
     }
   }
 }
