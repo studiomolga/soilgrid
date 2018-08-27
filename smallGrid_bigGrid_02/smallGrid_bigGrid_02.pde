@@ -21,7 +21,6 @@ int numSizeChanges = 0;
 int soundLibIndex = 0;
 float noisePerc = 0.0f;
 
-
 Cluster clusters[];
 DataParser dataParser;
 SoundEngine soundEngine;
