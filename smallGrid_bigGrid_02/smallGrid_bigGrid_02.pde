@@ -5,19 +5,22 @@ static final int BG_COLOR = 255;
 static final int MAX_SIZE_CHANGES = 7;
 static final int GRID_COLS = 3;
 static final int GRID_ROWS = 3;
-static final float RANDOM_PERIOD = 100;
+static final float DATA_PERIOD = 100;
 static final int SIZE_PERIOD = 60;
 static final int COLS = 4;
 static final int ROWS = 1;
+static final float NOISE_SPEED = 0.1f;
 final int NUM_CLUSTERS = COLS * ROWS;
 final int MAX_CELL_SIZE = (int) pow(2, MAX_SIZE_CHANGES);
 final Coordinate MAX_GRID_SIZE = new Coordinate(MAX_CELL_SIZE * GRID_COLS, MAX_CELL_SIZE * GRID_ROWS); 
 final int SOUND_ENGINE_VOICES = NUM_CLUSTERS * 4;
 
-float randomPeriodStart;
-int numRandomChanges = 0;
+float dataPeriodStart;
+int numDataChanges = 0;
 int numSizeChanges = 0;
 int soundLibIndex = 0;
+float noisePerc = 0.0f;
+
 
 Cluster clusters[];
 DataParser dataParser;
@@ -45,16 +48,16 @@ void setup(){
     clusters[i] = cluster;
     if (i % COLS == COLS - 1) y += 1;
   }
-  randomPeriodStart = millis();
+  dataPeriodStart = millis();
 }
 
 void draw(){
   background(BG_COLOR);
   
-  if(millis() - randomPeriodStart >= RANDOM_PERIOD){
-    numRandomChanges += 1;
+  if(millis() - dataPeriodStart >= DATA_PERIOD){
+    numDataChanges += 1;
     
-    if(numRandomChanges % SIZE_PERIOD == 0 && numSizeChanges < (MAX_SIZE_CHANGES - 1)){
+    if(numDataChanges % SIZE_PERIOD == 0 && numSizeChanges < (MAX_SIZE_CHANGES - 1)){
       for(Cluster cluster : clusters){
         cluster.increaseGrids();
       }
@@ -63,16 +66,25 @@ void draw(){
         soundEngine.setLibrary(soundLibIndex);
       }
       numSizeChanges += 1;
-    }
+    } 
     
     for(int i = 0; i < clusters.length; i++){
       float[] values = dataParser.getNextValues(i, clusters[i].getNumGrids());
       clusters[i].setGridStates(values);
     }
-    randomPeriodStart = millis();
+    dataPeriodStart = millis();
+  }
+  
+  if(numSizeChanges == MAX_SIZE_CHANGES - 1){
+    noisePerc += NOISE_SPEED;
+    for(Cluster cluster : clusters){
+      cluster.setNoisePerc(noisePerc);
+    }
   }
 
   for(Cluster cluster : clusters){
     cluster.display();
   }
+  
+  if(noisePerc >= 100.0f) exit();
 }
